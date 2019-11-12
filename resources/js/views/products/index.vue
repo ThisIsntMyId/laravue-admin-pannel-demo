@@ -32,17 +32,8 @@
       title="Product Info"
       :visible.sync="viewProduct"
       width="30%"
-      :before-close="handleClose"
     >
       <ProductInfo :product="currentProductInfo"></ProductInfo>
-    </el-dialog>
-    <el-dialog
-      title="Product Edit"
-      :visible.sync="editProduct"
-      width="30%"
-      :before-close="handleClose"
-    >
-      <EditProduct :product="currentProductInfo"></EditProduct>
     </el-dialog>
   </div>
 </template>
@@ -51,7 +42,7 @@
 import Resource from '@/api/resource';
 import Pagination from '@/components/Pagination/index.vue';
 import ProductInfo from './components/ProductInfo';
-import EditProduct from './EditProduct';
+// import EditProduct from './EditProduct';
 const productResource = new Resource('products');
 const categoryResource = new Resource('categories');
 
@@ -60,7 +51,7 @@ export default {
   components: {
     Pagination,
     ProductInfo,
-    EditProduct,
+    // EditProduct,
   },
   data() {
     return {
@@ -109,9 +100,7 @@ export default {
       this.currentProductInfo = info;
     },
     handleEdit(index, info) {
-      this.editProduct = true;
-      this.currentProductInfo = info;
-      console.log(this.currentProductInfo);
+      this.$router.push('/product/edit/' + info.id);
     },
     closeDialog() {
       this.viewProduct = false;

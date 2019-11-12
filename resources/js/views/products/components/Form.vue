@@ -63,7 +63,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="createNewproduct">Create</el-button>
+        <el-button type="primary" @click="this.$emit('clicked', this.product)">{{editable ? "Save" : "Create"}}</el-button>
         <el-button>Cancel</el-button>
       </el-form-item>
     </el-form>
@@ -73,7 +73,7 @@
 <script>
 import Resource from '@/api/resource';
 const categoryResource = new Resource('categories');
-const productResource = new Resource('products');
+// const productResource = new Resource('products');
 
 export default {
   name: 'Form',
@@ -104,25 +104,25 @@ export default {
     this.getCategories();
   },
   methods: {
-    createNewproduct() {
-      this.product.price = parseInt(this.product.price);
-      this.product.quantity = parseInt(this.product.quantity);
-      this.product.category_id =
-        this.category.indexOf(this.product.category) + 1;
-      this.product.available_in = this.product.available_in_arr.join(',');
-      this.product.reviewed = parseInt(this.product.reviewed);
-      console.log(this.product);
-      alert(this.product);
-      delete this.product.category;
-      delete this.product.available_in_arr;
-      productResource.store(this.product).then(response => {
-        this.$message({
-          message: 'New Product Added',
-          type: 'success',
-          duration: 3000,
-        });
-      });
-    },
+    // createNewproduct() {
+    //   this.product.price = parseInt(this.product.price);
+    //   this.product.quantity = parseInt(this.product.quantity);
+    //   this.product.category_id =
+    //     this.category.indexOf(this.product.category) + 1;
+    //   this.product.available_in = this.product.available_in_arr.join(',');
+    //   this.product.reviewed = parseInt(this.product.reviewed);
+    //   console.log(this.product);
+    //   alert(this.product);
+    //   delete this.product.category;
+    //   delete this.product.available_in_arr;
+    //   productResource.store(this.product).then(response => {
+    //     this.$message({
+    //       message: 'New Product Added',
+    //       type: 'success',
+    //       duration: 3000,
+    //     });
+    //   });
+    // },
     async getCategories() {
       this.category = (await categoryResource.list({})).map(cat => cat.name);
       console.log(this.category);

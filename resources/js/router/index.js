@@ -175,6 +175,13 @@ export const constantRoutes = [
         name: 'CreateProduct',
         meta: { title: 'Add Product', icon: 'product', noCache: true },
       },
+      {
+        path: '/product/edit/:id',
+        component: () => import('@/views/products/newProduct'),
+        name: 'EditProduct',
+        hidden: true,
+        meta: { title: 'Edit Product', icon: 'product', noCache: true },
+      },
     ],
   },
   {
