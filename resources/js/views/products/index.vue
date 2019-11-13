@@ -11,7 +11,7 @@
         <el-option v-for="item in category" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
       <el-button class="filter-item" icon="el-icon-refresh" @click="reserFilterParams()">Reset</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-search">Search</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFullNameSearch">Search</el-button>
       <el-button
         :loading="downloadLoadingLess"
         class="filter-item"

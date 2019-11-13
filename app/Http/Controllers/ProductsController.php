@@ -45,8 +45,13 @@ class ProductsController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        if($request->query('name')){
+            $products = Products::where('name', 'like', '%' . $request->query('name') . '%')->paginate(25);
+            return response()->json($products, 200);
+        }
+
         $products = Products::paginate(25);
         return response()->json($products, 200);
     }
