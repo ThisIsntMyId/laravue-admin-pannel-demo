@@ -10,7 +10,7 @@
       >
         <el-option v-for="item in category" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
-      <el-button class="filter-item" icon="el-icon-refresh" @click="searchName=''; searchCategory='';">Reset</el-button>
+      <el-button class="filter-item" icon="el-icon-refresh" @click="reserFilterParams()">Reset</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-search">Search</el-button>
       <el-button
         :loading="downloadLoadingLess"
@@ -128,6 +128,10 @@ export default {
         filteredProducts = products;
       }
       return filteredProducts;
+    },
+    reserFilterParams() {
+      this.searchName = '';
+      this.searchCategory = '';
     },
     getCategoryName(id) {
       return this.category[id - 1].name;
