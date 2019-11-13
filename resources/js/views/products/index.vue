@@ -12,6 +12,7 @@
         @click="handleLessDownload"
       >Export Less</el-button>
     </div>
+    <p>Click search button for more results</p>
     <Pagination
       :total="totalProducts"
       layout="total, prev, pager, next"
@@ -19,7 +20,12 @@
       :page.sync="currentPage"
       @pagination="loadNewPage"
     ></Pagination>
-    <el-table v-loading="loading" :data="products.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" stripe style="width: 100%">
+    <el-table
+      v-loading="loading"
+      :data="products.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+      stripe
+      style="width: 100%"
+    >
       <el-table-column prop="name" label="Product Name"></el-table-column>
       <el-table-column prop="brand" label="Brand"></el-table-column>
       <!-- <el-table-column prop="description" labe l="Description" width="200px"></el-table-column> -->
