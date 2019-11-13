@@ -3,16 +3,14 @@
     <h1>My Products</h1>
     <div class="filter-container">
       <el-input v-model="search" placeholder="name" style="width: 200px;" class="filter-item" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">Search</el-button>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">Add</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search">Search</el-button>
       <el-button
-        v-waves
-        :loading="downloadLoading"
+        :loading="downloadLoadingLess"
         class="filter-item"
         type="primary"
         icon="el-icon-download"
-        @click="handleDownload"
-      >{{ $t('table.export') }}</el-button>
+        @click="handleLessDownload"
+      >Export Less</el-button>
     </div>
     <Pagination
       :total="totalProducts"
@@ -21,7 +19,7 @@
       :page.sync="currentPage"
       @pagination="loadNewPage"
     ></Pagination>
-    <el-table v-loading="loading" :data="products" stripe style="width: 100%">
+    <el-table v-loading="loading" :data="products.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" stripe style="width: 100%">
       <el-table-column prop="name" label="Product Name"></el-table-column>
       <el-table-column prop="brand" label="Brand"></el-table-column>
       <!-- <el-table-column prop="description" labe l="Description" width="200px"></el-table-column> -->
@@ -51,7 +49,7 @@
 import Resource from '@/api/resource';
 import Pagination from '@/components/Pagination/index.vue';
 import ProductInfo from './components/ProductInfo';
-// import EditProduct from './EditProduct';
+import { parseTime } from '@/utils';
 const productResource = new Resource('products');
 const categoryResource = new Resource('categories');
 
@@ -72,6 +70,8 @@ export default {
       viewProduct: false,
       editProduct: false,
       currentProductInfo: null,
+      downloadLoadingLess: false,
+      search: '',
     };
   },
   created() {
@@ -124,6 +124,47 @@ export default {
         });
         this.getList({ page: this.currentPage });
       });
+    },
+    handleLessDownload() {
+      this.downloadLoadingLess = true;
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = [
+          'Product Name',
+          'Brand',
+          'Price',
+          'Category',
+          'Date Of Purchase',
+          'Condition',
+          'Available In',
+        ];
+        const filterVal = [
+          'name',
+          'brand',
+          'price',
+          'category',
+          'date_of_purchase',
+          'condition',
+          'available_in',
+        ];
+        const data = this.formatJson(filterVal, this.products);
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: 'ProductsLess',
+        });
+        this.downloadLoadingLess = false;
+      });
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === 'timestamp') {
+            return parseTime(v[j]);
+          } else {
+            return v[j];
+          }
+        })
+      );
     },
   },
 };
