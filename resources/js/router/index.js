@@ -171,13 +171,13 @@ export const constantRoutes = [
       },
       {
         path: '/product/create',
-        component: () => import('@/views/products/newProduct'),
+        component: () => import('@/views/products/ProductActions'),
         name: 'CreateProduct',
         meta: { title: 'Add Product', icon: 'product', noCache: true },
       },
       {
         path: '/product/edit/:id',
-        component: () => import('@/views/products/newProduct'),
+        component: () => import('@/views/products/ProductActions'),
         name: 'EditProduct',
         hidden: true,
         meta: { title: 'Edit Product', icon: 'product', noCache: true },
