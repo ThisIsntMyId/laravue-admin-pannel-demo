@@ -24,14 +24,14 @@
     <el-table v-loading="loading" :data="products" stripe style="width: 100%">
       <el-table-column prop="name" label="Product Name"></el-table-column>
       <el-table-column prop="brand" label="Brand"></el-table-column>
-      <!-- <el-table-column prop="description" label="Description" width="200px"></el-table-column> -->
+      <!-- <el-table-column prop="description" labe l="Description" width="200px"></el-table-column> -->
       <el-table-column prop="price" label="Price"></el-table-column>
-      <!-- <el-table-column prop="ratings" label="Ratings"></el-table-column> -->
+      <!-- <el-table-column prop="ratings" label= "Ratings"></el-table-column> -->
       <el-table-column prop="category" label="Category"></el-table-column>
-      <!-- <el-table-column prop="quantity" label="Quantity"></el-table-column> -->
+      <!-- <el-table-column prop="quantity" labe  l="Quantity"></el-table-column> -->
       <el-table-column prop="date_of_purchase" label="Date Of Purchase"></el-table-column>
       <el-table-column prop="condition" label="Condition"></el-table-column>
-      <!-- <el-table-column prop="reviewed_text" label="Reviewed"></el-table-column> -->
+      <!-- <el-table-column prop="reviewed_t  ext" label="Reviewed"></el-table-column> -->
       <el-table-column prop="available_in" label="Available In"></el-table-column>
       <el-table-column label="Operations" width="300px">
         <template slot-scope="scope">
