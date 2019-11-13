@@ -139,35 +139,39 @@ export default {
       delete productData.category;
       return productData;
     },
-    // getCategoryName(id) {
-    //   return this.category[id - 1].name;
-    // },
     handleCancel() {
       this.formDataReset();
     },
     createProduct() {
       const productData = this.filterFormData(this.formData);
-      productResource.store(productData).then(response => {
-        this.$message({
-          message: 'New Product Added',
-          type: 'success',
-          duration: 3000,
+      productResource
+        .store(productData)
+        .then(response => {
+          this.$message({
+            message: 'New Product Added',
+            type: 'success',
+            duration: 3000,
+          });
+          this.formDataReset();
+        })
+        .catch(response => {
+          alert(response);
         });
-        this.formDataReset();
-      });
     },
     updateProduct() {
       alert('update');
       const productData = this.filterFormData(this.formData);
       console.log(productData);
-      productResource.update(this.$route.params.id, productData).then(response => {
-        this.$message({
-          message: 'Product Updated Successfully',
-          type: 'success',
-          duration: 3000,
+      productResource
+        .update(this.$route.params.id, productData)
+        .then(response => {
+          this.$message({
+            message: 'Product Updated Successfully',
+            type: 'success',
+            duration: 3000,
+          });
+          this.populateFormData(this.$route.params.id);
         });
-        this.populateFormData(this.$route.params.id);
-      });
     },
   },
 };

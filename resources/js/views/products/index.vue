@@ -1,6 +1,19 @@
 <template>
-  <div>
+  <div class="app-container">
     <h1>My Products</h1>
+    <div class="filter-container">
+      <el-input v-model="search" placeholder="name" style="width: 200px;" class="filter-item" />
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">Search</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">Add</el-button>
+      <el-button
+        v-waves
+        :loading="downloadLoading"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleDownload"
+      >{{ $t('table.export') }}</el-button>
+    </div>
     <Pagination
       :total="totalProducts"
       layout="total, prev, pager, next"
@@ -11,14 +24,14 @@
     <el-table v-loading="loading" :data="products" stripe style="width: 100%">
       <el-table-column prop="name" label="Product Name"></el-table-column>
       <el-table-column prop="brand" label="Brand"></el-table-column>
-      <el-table-column prop="description" label="Description" width="200px"></el-table-column>
+      <!-- <el-table-column prop="description" label="Description" width="200px"></el-table-column> -->
       <el-table-column prop="price" label="Price"></el-table-column>
-      <el-table-column prop="ratings" label="Ratings"></el-table-column>
+      <!-- <el-table-column prop="ratings" label="Ratings"></el-table-column> -->
       <el-table-column prop="category" label="Category"></el-table-column>
-      <el-table-column prop="quantity" label="Quantity"></el-table-column>
+      <!-- <el-table-column prop="quantity" label="Quantity"></el-table-column> -->
       <el-table-column prop="date_of_purchase" label="Date Of Purchase"></el-table-column>
       <el-table-column prop="condition" label="Condition"></el-table-column>
-      <el-table-column prop="reviewed_text" label="Reviewed"></el-table-column>
+      <!-- <el-table-column prop="reviewed_text" label="Reviewed"></el-table-column> -->
       <el-table-column prop="available_in" label="Available In"></el-table-column>
       <el-table-column label="Operations" width="300px">
         <template slot-scope="scope">
@@ -28,11 +41,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog
-      title="Product Info"
-      :visible.sync="viewProduct"
-      width="30%"
-    >
+    <el-dialog title="Product Info" :visible.sync="viewProduct" width="30%">
       <ProductInfo :product="currentProductInfo"></ProductInfo>
     </el-dialog>
   </div>
