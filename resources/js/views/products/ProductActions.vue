@@ -57,7 +57,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="editable ? updateProduct() : createProduct()">Save</el-button>
-        <el-button @click="handleCancel">Cancel</el-button>
+        <el-button @click="editable ? populateFormData($route.params.id) : formDataReset()">Reset</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -93,9 +93,7 @@ export default {
     this.getCategories();
     if (this.$route.params.id) {
       this.editable = true;
-      productResource.get(this.$route.params.id).then(response => {
-        this.populateFormData(response);
-      });
+      this.populateFormData(this.$route.params.id);
     } else {
       this.editable = false;
     }
@@ -120,15 +118,26 @@ export default {
         available_in: [],
       };
     },
-    populateFormData(data) {
-      console.log(data);
-      this.formData = Object.assign({}, data);
-      this.formData.price = this.formData.price.toString();
-      this.formData.quantity = this.formData.quantity.toString();
-      this.formData.category = this.category[this.formData.category_id - 1];
-      delete this.formData.category_id;
-      this.formData.available_in = this.formData.available_in.split(',');
-      console.log(this.formData);
+    populateFormData(id) {
+      productResource.get(id).then(response => {
+        // console.log(response);
+        this.formData = Object.assign({}, response);
+        this.formData.price = this.formData.price.toString();
+        this.formData.quantity = this.formData.quantity.toString();
+        this.formData.category = this.category[this.formData.category_id - 1];
+        delete this.formData.category_id;
+        this.formData.available_in = this.formData.available_in.split(',');
+        // console.log(this.formData);
+      });
+    },
+    filterFormData(formData) {
+      const productData = Object.assign({}, formData);
+      productData.available_in = productData.available_in.join(',');
+      productData.price = parseInt(productData.price);
+      productData.quantity = parseInt(productData.quantity);
+      productData.category_id = this.category.indexOf(productData.category) + 1;
+      delete productData.category;
+      return productData;
     },
     // getCategoryName(id) {
     //   return this.category[id - 1].name;
@@ -137,15 +146,7 @@ export default {
       this.formDataReset();
     },
     createProduct() {
-      alert('Create');
-      // console.log(this.formData);
-      const productData = Object.assign({}, this.formData);
-      productData.available_in = productData.available_in.join(',');
-      productData.price = parseInt(productData.price);
-      productData.quantity = parseInt(productData.quantity);
-      productData.category_id = this.category.indexOf(productData.category) + 1;
-      delete productData.category;
-      console.log(productData);
+      const productData = this.filterFormData(this.formData);
       productResource.store(productData).then(response => {
         this.$message({
           message: 'New Product Added',
@@ -157,6 +158,16 @@ export default {
     },
     updateProduct() {
       alert('update');
+      const productData = this.filterFormData(this.formData);
+      console.log(productData);
+      productResource.update(this.$route.params.id, productData).then(response => {
+        this.$message({
+          message: 'Product Updated Successfully',
+          type: 'success',
+          duration: 3000,
+        });
+        this.populateFormData(this.$route.params.id);
+      });
     },
   },
 };
