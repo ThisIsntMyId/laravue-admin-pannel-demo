@@ -2,7 +2,7 @@
   <div class="app-container">
     <h1>My Products</h1>
     <div class="filter-container">
-      <el-input v-model="searchName" placeholder="name" style="width: 200px;" class="filter-item" />
+      <el-input v-model="searchName" @keyup.enter.native="handleFullNameSearch" placeholder="name" style="width: 200px;" class="filter-item" />
       <el-select
         v-model="searchCategory"
         placeholder="please select category"
@@ -94,6 +94,9 @@ export default {
     this.getList({ page: 1 });
   },
   methods: {
+    notify() {
+      alert();
+    },
     async getList(query) {
       this.loading = true;
       const data = await productResource.list(query);
