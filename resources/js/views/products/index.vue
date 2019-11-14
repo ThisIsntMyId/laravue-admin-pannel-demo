@@ -11,7 +11,12 @@
         <el-option v-for="item in category" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
       <el-button class="filter-item" icon="el-icon-refresh" @click="reserFilterParams()">Reset</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFullNameSearch">Search</el-button>
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFullNameSearch"
+      >Search</el-button>
       <el-button
         :loading="downloadLoadingLess"
         class="filter-item"
@@ -136,8 +141,16 @@ export default {
     getCategoryName(id) {
       return this.category[id - 1].name;
     },
+    async handleFullNameSearch() {
+      await this.getList({ name: this.searchName });
+      console.log(this.products);
+    },
     async loadNewPage(val) {
-      await this.getList({ page: val.page });
+      if (!this.searchName) {
+        await this.getList({ page: val.page });
+      } else {
+        await this.getList({ name: this.searchName, page: val.page });
+      }
     },
     handleView(index, info) {
       this.viewProduct = true;
