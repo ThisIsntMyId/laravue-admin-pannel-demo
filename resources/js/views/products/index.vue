@@ -2,7 +2,13 @@
   <div class="app-container">
     <h1>My Products</h1>
     <div class="filter-container">
-      <el-input v-model="searchName" @keyup.enter.native="handleFullNameSearch" placeholder="name" style="width: 200px;" class="filter-item" />
+      <el-input
+        v-model="searchName"
+        @keyup.enter.native="handleFullNameSearch"
+        placeholder="name"
+        style="width: 200px;"
+        class="filter-item"
+      />
       <el-select
         v-model="searchCategory"
         placeholder="please select category"
@@ -146,7 +152,6 @@ export default {
     },
     async handleFullNameSearch() {
       await this.getList({ name: this.searchName });
-      console.log(this.products);
     },
     async loadNewPage(val) {
       if (!this.searchName) {
@@ -216,6 +221,11 @@ export default {
           }
         })
       );
+    },
+  },
+  watch: {
+    async searchName(newVal, oldVal) {
+      await this.getList({ name: newVal });
     },
   },
 };
