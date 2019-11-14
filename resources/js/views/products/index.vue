@@ -50,14 +50,37 @@
       <el-table-column prop="name" sortable label="Product Name"></el-table-column>
       <el-table-column prop="brand" sortable label="Brand"></el-table-column>
       <!-- <el-table-column prop="description" labe l="Description" width="200px"></el-table-column> -->
-      <el-table-column prop="price" sortable label="Price"></el-table-column>
+      <el-table-column
+        prop="price"
+        :filters="priceFilter"
+        :filter-method="priceFilterHandler"
+        sortable
+        label="Price"
+      ></el-table-column>
       <!-- <el-table-column prop="ratings" label= "Ratings"></el-table-column> -->
-      <el-table-column prop="category" sortable label="Category"></el-table-column>
+      <el-table-column
+        prop="category"
+        :filters="categoryFilter"
+        :filter-method="categoryFilterHandler"
+        sortable
+        label="Category"
+      ></el-table-column>
       <!-- <el-table-column prop="quantity" label="Quantity"></el-table-column> -->
-      <el-table-column prop="date_of_purchase" sortable label="Date Of Purchase"></el-table-column>
-      <el-table-column prop="condition" sortable label="Condition"></el-table-column>
+      <el-table-column prop="date_of_purchase" :filters="dateFilter" :filter-method="dateFilterHandler" sortable label="Date Of Purchase"></el-table-column>
+      <el-table-column
+        prop="condition"
+        :filters="conditionFilter"
+        :filter-method="conditionFilterHandler"
+        sortable
+        label="Condition"
+      ></el-table-column>
       <!-- <el-table-column prop="reviewed_text" label="Reviewed"></el-table-column> -->
-      <el-table-column prop="available_in" label="Available In"></el-table-column>
+      <el-table-column
+        prop="available_in"
+        :filters="availableCitiesFilter"
+        :filter-method="availableCitiesFilterHandler"
+        label="Available In"
+      ></el-table-column>
       <el-table-column label="Operations" width="300px">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleView(scope.$index, scope.row)">View</el-button>
@@ -101,15 +124,111 @@ export default {
       downloadLoadingFull: false,
       searchName: '',
       searchCategory: '',
+      conditionFilter: [
+        {
+          text: 'new',
+          value: 'new',
+        },
+        {
+          text: 'moderate',
+          value: 'moderate',
+        },
+        {
+          text: 'used',
+          value: 'used',
+        },
+        {
+          text: 'old',
+          value: 'old',
+        },
+        {
+          text: 'not_working',
+          value: 'not_working',
+        },
+      ],
+      priceFilter: [
+        {
+          text: '0-2500 Rs.',
+          value: { min: 0, max: 2500 },
+        },
+        {
+          text: '2500-5000 Rs.',
+          value: { min: 2500, max: 5000 },
+        },
+        {
+          text: '5000-7500 Rs.',
+          value: { min: 5000, max: 7500 },
+        },
+        {
+          text: '7500-10,000 Rs.',
+          value: { min: 7500, max: 10000 },
+        },
+      ],
+      dateFilter: [
+        {
+          text: '1 year before establishing (1996-11-06)',
+          value: '1996-11-06',
+        },
+        {
+          text: 'After Mega Discount Offer (2000-10-10)',
+          value: '2000-10-10',
+        },
+        {
+          text: 'After May 2015 (2015-05-01)',
+          value: '2015-05-01',
+        },
+      ],
+      availableCitiesFilter: [
+        {
+          text: 'Surat',
+          value: 'Surat',
+        },
+        {
+          text: 'Banglore',
+          value: 'Banglore',
+        },
+        {
+          text: 'Pune',
+          value: 'Pune',
+        },
+        {
+          text: 'Delhi',
+          value: 'Delhi',
+        },
+      ],
     };
+  },
+  computed: {
+    categoryFilter() {
+      const filterParam = [];
+      for (const category of this.category) {
+        const obj = {};
+        obj['text'] = category.name;
+        obj['value'] = category.name;
+        filterParam.push(obj);
+      }
+      return filterParam;
+    },
   },
   created() {
     this.getCategories();
     this.getList({ page: 1 });
   },
   methods: {
-    notify() {
-      alert();
+    priceFilterHandler(value, row) {
+      return value.max > row.price && row.price >= value.min;
+    },
+    categoryFilterHandler(value, row) {
+      return row.category === value;
+    },
+    dateFilterHandler(value, row) {
+      return (new Date(row.date_of_purchase) > new Date(value));
+    },
+    conditionFilterHandler(value, row) {
+      return row.condition === value;
+    },
+    availableCitiesFilterHandler(value, row) {
+      return row.available_in_arr.includes(value);
     },
     async getList(query) {
       this.loading = true;
