@@ -185,6 +185,35 @@ export const constantRoutes = [
     ],
   },
   {
+    path: '/cards',
+    component: Layout,
+    redirect: '/cards/index',
+    meta: {
+      title: 'Our Cards', icon: 'role',
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/cards/index'),
+        name: 'ListCards',
+        meta: { title: 'Cards', icon: 'list', noCache: true },
+      },
+      {
+        path: '/cards/create',
+        component: () => import('@/views/cards/CardActions'),
+        name: 'CreateCard',
+        meta: { title: 'Add Card', icon: 'drag', noCache: true },
+      },
+      {
+        path: '/cards/edit/:id',
+        component: () => import('@/views/cards/CardActions'),
+        name: 'EditCard',
+        hidden: true,
+        meta: { title: 'Edit Card', noCache: false },
+      },
+    ],
+  },
+  {
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',

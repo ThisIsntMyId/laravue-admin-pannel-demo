@@ -1,5 +1,6 @@
 <?php
 
+use App\CardCategory;
 use Illuminate\Http\Request;
 use \App\Laravue\Faker;
 use \App\Laravue\JsonResponse;
@@ -33,6 +34,11 @@ Route::group(['middleware' => 'api'], function () {
     Route::delete('products/{products}', 'ProductsController@destroy');
     
     Route::get('categories/', 'CategoryController@index');
+
+    Route::apiResource('cards', 'CardController');
+    Route::get('cardcategories/', function() {
+        return CardCategory::all();
+    });
     
 
     Route::apiResource('users', 'UserController')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_USER_MANAGE);
