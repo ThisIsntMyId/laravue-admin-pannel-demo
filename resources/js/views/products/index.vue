@@ -30,6 +30,13 @@
         icon="el-icon-download"
         @click="handleLessDownload"
       >Export Less</el-button>
+      <el-button
+        :loading="downloadLoadingFull"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleFullDownload"
+      >Export Full</el-button>
     </div>
     <p>Click search button for more results</p>
     <Pagination
@@ -40,16 +47,16 @@
       @pagination="loadNewPage"
     ></Pagination>
     <el-table v-loading="loading" :data="filterProductsTable(products)" stripe style="width: 100%">
-      <el-table-column prop="name" label="Product Name"></el-table-column>
-      <el-table-column prop="brand" label="Brand"></el-table-column>
+      <el-table-column prop="name" sortable label="Product Name"></el-table-column>
+      <el-table-column prop="brand" sortable label="Brand"></el-table-column>
       <!-- <el-table-column prop="description" labe l="Description" width="200px"></el-table-column> -->
-      <el-table-column prop="price" label="Price"></el-table-column>
+      <el-table-column prop="price" sortable label="Price"></el-table-column>
       <!-- <el-table-column prop="ratings" label= "Ratings"></el-table-column> -->
-      <el-table-column prop="category" label="Category"></el-table-column>
-      <!-- <el-table-column prop="quantity" labe  l="Quantity"></el-table-column> -->
-      <el-table-column prop="date_of_purchase" label="Date Of Purchase"></el-table-column>
-      <el-table-column prop="condition" label="Condition"></el-table-column>
-      <!-- <el-table-column prop="reviewed_t  ext" label="Reviewed"></el-table-column> -->
+      <el-table-column prop="category" sortable label="Category"></el-table-column>
+      <!-- <el-table-column prop="quantity" label="Quantity"></el-table-column> -->
+      <el-table-column prop="date_of_purchase" sortable label="Date Of Purchase"></el-table-column>
+      <el-table-column prop="condition" sortable label="Condition"></el-table-column>
+      <!-- <el-table-column prop="reviewed_text" label="Reviewed"></el-table-column> -->
       <el-table-column prop="available_in" label="Available In"></el-table-column>
       <el-table-column label="Operations" width="300px">
         <template slot-scope="scope">
@@ -91,6 +98,7 @@ export default {
       editProduct: false,
       currentProductInfo: null,
       downloadLoadingLess: false,
+      downloadLoadingFull: false,
       searchName: '',
       searchCategory: '',
     };
@@ -181,35 +189,67 @@ export default {
         this.getList({ page: this.currentPage });
       });
     },
-    handleLessDownload() {
+    exportWithFieldsToExcel(fields, header, filename) {
       this.downloadLoadingLess = true;
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = [
-          'Product Name',
-          'Brand',
-          'Price',
-          'Category',
-          'Date Of Purchase',
-          'Condition',
-          'Available In',
-        ];
-        const filterVal = [
-          'name',
-          'brand',
-          'price',
-          'category',
-          'date_of_purchase',
-          'condition',
-          'available_in',
-        ];
-        const data = this.formatJson(filterVal, this.products);
+        const data = this.formatJson(fields, this.products);
         excel.export_json_to_excel({
-          header: tHeader,
+          header: header,
           data,
-          filename: 'ProductsLess',
+          filename: filename,
         });
         this.downloadLoadingLess = false;
       });
+    },
+    handleLessDownload() {
+      const header = [
+        'Product Name',
+        'Brand',
+        'Price',
+        'Category',
+        'Date Of Purchase',
+        'Condition',
+        'Available In',
+      ];
+      const fields = [
+        'name',
+        'brand',
+        'price',
+        'category',
+        'date_of_purchase',
+        'condition',
+        'available_in',
+      ];
+      this.exportWithFieldsToExcel(fields, header, 'ProductsLess');
+    },
+    handleFullDownload() {
+      const header = [
+        'Product Name',
+        'Brand',
+        'Price',
+        'Category',
+        'Date Of Purchase',
+        'Condition',
+        'Available In',
+        'Description',
+        'Ratings',
+        'Quantity',
+        'Reviewed_text',
+      ];
+      const fields = [
+        'name',
+        'brand',
+        'price',
+        'category',
+        'date_of_purchase',
+        'condition',
+        'available_in',
+        'description',
+        'ratings',
+        'quantity',
+        'reviewed_text',
+      ];
+      this.exportWithFieldsToExcel(fields, header, 'ProductsFull');
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
