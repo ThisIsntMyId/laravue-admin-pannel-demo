@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <h1>My Cards</h1>
+    <el-button type="primary" icon="el-icon-upload" @click="uploadDialogVisible = true">Import CSV</el-button>
     <Pagination
       :total="totalCards"
       layout="total, prev, pager, next"
@@ -29,6 +30,33 @@
         <el-tag>{{currentViewedCard.cardcategory}}</el-tag>
       </el-card>
     </el-dialog>
+    <el-dialog
+      title="Import Data from CSV"
+      :visible.sync="uploadDialogVisible"
+      :before-close="handleUploadDialogClose"
+    >
+      <div>
+        <el-upload
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-change="handleUploadChange"
+          :before-upload="handleBeforeUpload"
+          accept=".csv"
+          :file-list="fileList"
+          ref="upload"
+          :auto-upload="false"
+        >
+          <el-button slot="trigger" size="small" type="primary">Click to upload</el-button>
+          <el-button
+            style="margin-left: 10px;"
+            size="small"
+            type="success"
+            @click="submitUpload"
+          >upload to server</el-button>
+          <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+        </el-upload>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -52,6 +80,8 @@ export default {
       loadingCardsList: true,
       currentViewedCard: '',
       viewCard: false,
+      uploadDialogVisible: false,
+      fileList: [],
     };
   },
   created() {
@@ -59,6 +89,33 @@ export default {
     this.getCardList({ page: 1 });
   },
   methods: {
+    submitUpload() {
+      this.$refs.upload.submit();
+    },
+    handleUploadChange(file, fileList) {
+      this.fileList = fileList.slice(-3);
+    },
+    handleBeforeUpload(file) {
+      console.log(file);
+      const allowedCsvMime = [
+        'text/csv',
+        'text/plain',
+        'application/csv',
+        'text/comma-separated-values',
+        'application/excel',
+        'application/vnd.ms-excel',
+        'application/vnd.msexcel',
+        'text/anytext',
+        'application/octet-stream',
+        'application/txt',
+      ];
+      if (allowedCsvMime.includes(file.type)) {
+        return true;
+      } else {
+        this.$message.error('You can only upload CSV files. No other file types are allowed');
+        this.fileList.pop(file);
+      }
+    },
     async getCardList(query) {
       this.loadingCardsList = true;
       const data = await cardResource.list(query);

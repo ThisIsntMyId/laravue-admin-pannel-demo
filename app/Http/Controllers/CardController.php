@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Card;
+use App\Http\Requests\CsvFileValidatorRequest;
 use Exception;
 use Illuminate\Http\Request;
 use Validator;
@@ -79,7 +80,7 @@ class CardController extends Controller
             return response()->json($data, 403);
         else {
             $status = $card->update($data['data']);
-            if($status)
+            if ($status)
                 return $card;
             else
                 return 'Error';
@@ -101,5 +102,12 @@ class CardController extends Controller
         }
 
         return response()->json(null, 204);
+    }
+
+    public function fromcsv(CsvFileValidatorRequest $request)
+    {
+        $csvfile = $request->file('csvfile')->getRealPath();
+        $data = array_map('str_getcsv', file($csvfile));
+        dd($data);
     }
 }

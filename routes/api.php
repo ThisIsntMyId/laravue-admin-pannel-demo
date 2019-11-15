@@ -39,6 +39,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('cardcategories/', function() {
         return CardCategory::all();
     });
+
+    Route::post('/cards/csvupload', 'CardController@fromcsv');
     
 
     Route::apiResource('users', 'UserController')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_USER_MANAGE);
