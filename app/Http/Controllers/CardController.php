@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Card;
 use App\Http\Requests\CsvFileValidatorRequest;
+use App\Imports\CardsImport;
 use Exception;
 use Illuminate\Http\Request;
 use Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CardController extends Controller
 {
@@ -106,8 +108,8 @@ class CardController extends Controller
 
     public function fromcsv(CsvFileValidatorRequest $request)
     {
+        dd("hello");
         $csvfile = $request->file('csvfile')->getRealPath();
-        $data = array_map('str_getcsv', file($csvfile));
-        dd($data);
+        Excel::import(new CardsImport, $csvfile);        
     }
 }

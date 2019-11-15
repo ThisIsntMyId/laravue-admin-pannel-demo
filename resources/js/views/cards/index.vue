@@ -38,7 +38,8 @@
       <div>
         <el-upload
           class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action
+          http-request="uploadToServer"
           :on-change="handleUploadChange"
           :before-upload="handleBeforeUpload"
           accept=".csv"
@@ -89,6 +90,7 @@ export default {
     this.getCardList({ page: 1 });
   },
   methods: {
+    uploadToServer() {},
     submitUpload() {
       this.$refs.upload.submit();
     },
@@ -112,7 +114,9 @@ export default {
       if (allowedCsvMime.includes(file.type)) {
         return true;
       } else {
-        this.$message.error('You can only upload CSV files. No other file types are allowed');
+        this.$message.error(
+          'You can only upload CSV files. No other file types are allowed'
+        );
         this.fileList.pop(file);
       }
     },
