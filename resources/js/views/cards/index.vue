@@ -39,10 +39,8 @@
         <el-upload
           class="upload-demo"
           action
-          :http-request="uploadToServer"
           :on-change="handleUploadChange"
           :before-upload="handleBeforeUpload"
-          :on-success="handleSuccess"
           accept=".csv"
           :file-list="fileList"
           ref="upload"
@@ -92,17 +90,19 @@ export default {
     this.getCardList({ page: 1 });
   },
   methods: {
-    uploadToServer() {
+    submitUpload() {
       const formData = new FormData();
       formData.append('csvfile', this.fileList[0].raw);
-      axios.post('http://127.0.0.1:8000/api/cards/csvupload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    },
-    submitUpload() {
-      this.$refs.upload.submit();
+      axios
+        .post('http://127.0.0.1:8000/api/cards/csvupload', formData)
+        .then(() => {
+          this.$message.success('Success');
+          this.getCardList({ page: 1 });
+          // this.fileList = []; //Temporary depicts that the file has been uploaded
+        })
+        .catch(() => {
+          alert('error');
+        });
     },
     handleUploadChange(file, fileList) {
       this.fileList = fileList.slice(-1);
