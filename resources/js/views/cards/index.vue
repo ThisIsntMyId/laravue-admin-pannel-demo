@@ -30,11 +30,7 @@
         <el-tag>{{currentViewedCard.cardcategory}}</el-tag>
       </el-card>
     </el-dialog>
-    <el-dialog
-      title="Import Data from CSV"
-      :visible.sync="uploadDialogVisible"
-      :before-close="handleUploadDialogClose"
-    >
+    <el-dialog title="Import Data from CSV" :visible.sync="uploadDialogVisible" width="30%">
       <div>
         <el-upload
           class="upload-demo"
@@ -181,6 +177,13 @@ export default {
         });
         this.getCardList({ page: this.currentPage });
       });
+    },
+  },
+  watch: {
+    uploadDialogVisible(newVal, oldVal) {
+      if (newVal === false) {
+        this.fileList = [];
+      }
     },
   },
 };
