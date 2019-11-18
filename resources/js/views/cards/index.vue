@@ -93,17 +93,36 @@ export default {
     submitUpload() {
       const formData = new FormData();
       formData.append('csvfile', this.fileList[0].raw);
+      this.fileList[0].status = 'uploading';
       axios
-        .post('http://127.0.0.1:8000/api/cards/csvupload', formData)
+        .post('http://127.0.0.1:8000/api/cards/csvupload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: function(progressEvent) {
+            this.fileList[0].percentage = parseInt(
+              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            );
+          }.bind(this),
+        })
         .then(() => {
           this.$message.success('Success');
           this.getCardList({ page: 1 });
+          this.fileList[0].status = 'success';
           // this.fileList = []; //Temporary depicts that the file has been uploaded
         })
         .catch(() => {
           alert('error');
         });
     },
+    // handleProgress(ev, file, fileLIst) {
+    //   alert();
+    //   file.raw['status'] = "uploading";
+    // },
+    // handleSuccess(res, file, fileLIst) {
+    //   alert();
+    //   file.raw['status'] = "success";
+    // },
     handleUploadChange(file, fileList) {
       this.fileList = fileList.slice(-1);
     },
