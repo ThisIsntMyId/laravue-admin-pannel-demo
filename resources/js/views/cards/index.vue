@@ -87,6 +87,10 @@ export default {
   },
   methods: {
     submitUpload() {
+      if (this.fileList.length === 0) {
+        this.$message.error('Please select some file to upload');
+        return false;
+      }
       const formData = new FormData();
       formData.append('csvfile', this.fileList[0].raw);
       this.fileList[0].status = 'uploading';
