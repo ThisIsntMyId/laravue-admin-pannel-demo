@@ -108,7 +108,6 @@ class CardController extends Controller
 
     public function fromcsv(CsvFileValidatorRequest $request)
     {
-        dd("hello");
         $csvfile = $request->file('csvfile')->getRealPath();
         Excel::import(new CardsImport, $csvfile);        
     }

@@ -39,9 +39,10 @@
         <el-upload
           class="upload-demo"
           action
-          http-request="uploadToServer"
+          :http-request="uploadToServer"
           :on-change="handleUploadChange"
           :before-upload="handleBeforeUpload"
+          :on-success="handleSuccess"
           accept=".csv"
           :file-list="fileList"
           ref="upload"
@@ -66,6 +67,7 @@ import Resource from '@/api/resource';
 import Pagination from '@/components/Pagination/index.vue';
 const cardcategoryResource = new Resource('cardcategories');
 const cardResource = new Resource('cards');
+import axios from 'axios';
 
 export default {
   name: 'Cards',
@@ -90,15 +92,22 @@ export default {
     this.getCardList({ page: 1 });
   },
   methods: {
-    uploadToServer() {},
+    uploadToServer() {
+      const formData = new FormData();
+      formData.append('csvfile', this.fileList[0].raw);
+      axios.post('http://127.0.0.1:8000/api/cards/csvupload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
     submitUpload() {
       this.$refs.upload.submit();
     },
     handleUploadChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
+      this.fileList = fileList.slice(-1);
     },
     handleBeforeUpload(file) {
-      console.log(file);
       const allowedCsvMime = [
         'text/csv',
         'text/plain',
