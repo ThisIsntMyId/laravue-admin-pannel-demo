@@ -115,14 +115,6 @@ export default {
           alert('error');
         });
     },
-    // handleProgress(ev, file, fileLIst) {
-    //   alert();
-    //   file.raw['status'] = "uploading";
-    // },
-    // handleSuccess(res, file, fileLIst) {
-    //   alert();
-    //   file.raw['status'] = "success";
-    // },
     handleUploadChange(file, fileList) {
       this.fileList = fileList.slice(-1);
     },
