@@ -6,9 +6,11 @@ use App\Card;
 use App\CardCategory;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\Importable;
 
 class CardsImport implements ToModel, WithHeadingRow
 {
+    use Importable;
     /**
     * @param array $row
     *

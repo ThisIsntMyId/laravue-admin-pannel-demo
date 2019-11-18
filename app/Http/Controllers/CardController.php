@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Card;
+use App\CardCategory;
 use App\Http\Requests\CsvFileValidatorRequest;
 use App\Imports\CardsImport;
 use Exception;
@@ -108,8 +109,18 @@ class CardController extends Controller
 
     public function fromcsv(CsvFileValidatorRequest $request)
     {
-        $csvfile = $request->file('csvfile')->getRealPath();
-        Excel::import(new CardsImport, $csvfile);
+        $csvfile = $request->file('csvfile');
+        // $array = Excel::toArray(new CardsImport, $csvfile);
+        $cardsFromCsv = (new CardsImport)->toCollection($csvfile)->flatten(1);
+        $cardsFromCsv->each(function ($card, $key) {
+            // print_r($card['cardcategory'] . '<br>');
+            $cardCategory_id = CardCategory::where('name', $card['cardcategory'])->first()->id;
+            $cardInDB = Card::updateOrCreate(['id' => $card['id']], ['name' => $card['name'], 
+                                                                     'description' => $card['description'], 
+                                                                     'price' => $card['price'], 
+                                                                     'cardCategory_id' => $cardCategory_id]);
+        });
+        dd('done');
         return response()->json(['message' => 'data added successfully'], 200);
     }
 }
